@@ -173,17 +173,27 @@ const PHOTO_LABELS = ['Side', 'Top'];
 function PhotoViewer({ photos, startIndex, onClose }) {
   const [idx, setIdx] = useState(startIndex);
   return createPortal(
-    <div className="fixed inset-0 bg-black/95 z-[9999] flex flex-col" onClick={onClose}>
-      <div className="flex-1 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[9999] bg-black/95 flex flex-col">
+      {/* Full-screen tap-to-close — must be a <button> so iOS Safari fires click */}
+      <button className="absolute inset-0 w-full h-full cursor-default" onClick={onClose} aria-label="Close photo viewer" />
+      {/* X close button */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/15 flex items-center justify-center text-white text-lg leading-none"
+        aria-label="Close"
+      >
+        ✕
+      </button>
+      {/* pointer-events-none so taps fall through to the backdrop button */}
+      <div className="relative z-[1] flex-1 flex items-center justify-center p-4 pointer-events-none">
         <img
           src={photos[idx]}
           alt={PHOTO_LABELS[idx] ?? `Photo ${idx + 1}`}
           className="max-w-full max-h-full rounded-xl object-contain"
-          onClick={e => e.stopPropagation()}
         />
       </div>
       {photos.length > 1 && (
-        <div className="flex justify-center gap-3 pb-8" onClick={e => e.stopPropagation()}>
+        <div className="relative z-10 flex justify-center gap-3 pb-8">
           {photos.map((src, i) => (
             <button
               key={i}
@@ -197,7 +207,6 @@ function PhotoViewer({ photos, startIndex, onClose }) {
           ))}
         </div>
       )}
-      <p className="text-center text-white/40 text-xs pb-6 pointer-events-none">Tap anywhere to close</p>
     </div>,
     document.body
   );
