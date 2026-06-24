@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { KNOWN_BLADES, KNOWN_RATCHETS, KNOWN_BITS, BEYBLADE_TYPES, TYPE_BG } from '../data/beyblades';
 
@@ -171,13 +172,14 @@ const PHOTO_LABELS = ['Side', 'Top'];
 
 function PhotoViewer({ photos, startIndex, onClose }) {
   const [idx, setIdx] = useState(startIndex);
-  return (
-    <div className="fixed inset-0 bg-black/95 z-50 flex flex-col" onClick={onClose}>
+  return createPortal(
+    <div className="fixed inset-0 bg-black/95 z-[9999] flex flex-col" onClick={onClose}>
       <div className="flex-1 flex items-center justify-center p-4">
         <img
           src={photos[idx]}
           alt={PHOTO_LABELS[idx] ?? `Photo ${idx + 1}`}
           className="max-w-full max-h-full rounded-xl object-contain"
+          onClick={e => e.stopPropagation()}
         />
       </div>
       {photos.length > 1 && (
@@ -195,7 +197,9 @@ function PhotoViewer({ photos, startIndex, onClose }) {
           ))}
         </div>
       )}
-    </div>
+      <p className="text-center text-white/40 text-xs pb-6 pointer-events-none">Tap anywhere to close</p>
+    </div>,
+    document.body
   );
 }
 
