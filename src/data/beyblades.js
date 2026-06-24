@@ -12,7 +12,7 @@ export const KNOWN_BLADES = [
   { id: 'hells_hammer', name: "Hell's Hammer", type: 'Stamina', series: 'X' },
   { id: 'wizard_arrow', name: 'Wizard Arrow', type: 'Stamina', series: 'X' },
   { id: 'rhino_horn', name: 'Rhino Horn', type: 'Balance', series: 'X' },
-  { id: 'knight_shield', name: 'Knight Shield', type: 'Defense', series: 'X' },
+  { id: 'knight_shield', name: 'Knight Shield', type: 'Defense', series: 'X', photos: ['/beyblades/knight-shield-top.jpg', '/beyblades/knight-shield-side.jpg'] },
 ];
 
 export const KNOWN_RATCHETS = [
