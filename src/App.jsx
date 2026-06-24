@@ -63,7 +63,7 @@ export default function App() {
   const ActiveComponent = TAB_COMPONENTS[activeTab];
 
   return (
-    <div className="flex flex-col h-screen max-w-lg mx-auto bg-gray-950 relative overflow-hidden">
+    <div className="flex flex-col h-dvh max-w-lg mx-auto bg-gray-950 relative overflow-hidden">
       <div className="flex-1 overflow-hidden flex flex-col">
         <ActiveComponent />
       </div>

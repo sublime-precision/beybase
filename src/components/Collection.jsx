@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { KNOWN_BLADES, KNOWN_RATCHETS, KNOWN_BITS, BEYBLADE_TYPES, TYPE_BG } from '../data/beyblades';
+import { KNOWN_BLADES, KNOWN_RATCHETS, KNOWN_BITS, BEYBLADE_TYPES, TYPE_BG, TYPE_COLORS } from '../data/beyblades';
+import { StatCardModal } from './StatCard';
 
 const FILTERS = ['All', ...BEYBLADE_TYPES];
 
@@ -214,11 +215,13 @@ function PhotoViewer({ photos, startIndex, onClose }) {
 
 function BeyCard({ item, onDelete }) {
   const [viewerIndex, setViewerIndex] = useState(null);
-  const blade = KNOWN_BLADES.find(b => b.id === item.bladeId);
+  const [showCard, setShowCard] = useState(false);
+  const blade   = KNOWN_BLADES.find(b => b.id === item.bladeId);
   const ratchet = KNOWN_RATCHETS.find(r => r.id === item.ratchetId);
-  const bit = KNOWN_BITS.find(b => b.id === item.bitId);
+  const bit     = KNOWN_BITS.find(b => b.id === item.bitId);
 
-  const typeBadge = blade ? TYPE_BG[blade.type] : '';
+  const typeBadge  = blade ? TYPE_BG[blade.type] : '';
+  const typeColor  = blade ? TYPE_COLORS[blade.type] : '#22c55e';
 
   // blade data photos take priority; fall back to user-uploaded photo
   const photos = blade?.photos?.length
@@ -232,10 +235,7 @@ function BeyCard({ item, onDelete }) {
       <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
         {photos.length > 0 && (
           <div className="relative">
-            <button
-              onClick={() => setViewerIndex(0)}
-              className="w-full block"
-            >
+            <button onClick={() => setViewerIndex(0)} className="w-full block">
               <img
                 src={photos[0]}
                 alt={item.nickname || blade?.name}
@@ -284,8 +284,19 @@ function BeyCard({ item, onDelete }) {
             </span>
           </div>
           <button
+            onClick={() => setShowCard(true)}
+            className="mt-3 w-full py-2.5 rounded-xl text-sm font-bold transition-opacity active:opacity-60"
+            style={{
+              background: `${typeColor}18`,
+              color: typeColor,
+              border: `1px solid ${typeColor}38`,
+            }}
+          >
+            ⚡ View Stat Card
+          </button>
+          <button
             onClick={() => onDelete(item.id)}
-            className="mt-3 text-xs text-gray-600 hover:text-red-400 transition-colors"
+            className="mt-2 text-xs text-gray-600 hover:text-red-400 transition-colors"
           >
             Remove
           </button>
@@ -296,6 +307,15 @@ function BeyCard({ item, onDelete }) {
           photos={photos}
           startIndex={viewerIndex}
           onClose={() => setViewerIndex(null)}
+        />
+      )}
+      {showCard && (
+        <StatCardModal
+          blade={blade}
+          item={item}
+          ratchet={ratchet}
+          bit={bit}
+          onClose={() => setShowCard(false)}
         />
       )}
     </>
